@@ -54,15 +54,16 @@ docs/_build/
 target/
 
 
-import SocketServer
+import socket
 
-class MyTCPHandler(SocketServer.BaseRequestHandler):
-def handle(self):
-self.data = self.request.recv(1024).strip()
-print "%s wrote:" % self.client_address[0]
-print self.data
-self.request.send(self.data.upper())
-if __name__ == "__main__":
-HOST, PORT = "localhost", 9999
-server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
-server.serve_forever()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+host = 'localhost'
+port = 44444
+s.bind((host, port))
+s.listen(1)
+conn, addr = s.accept()
+data = conn.recv(1000000)
+print 'client is at', addr , data
+conn.send(data)
+z = raw_input()
+conn.close()
